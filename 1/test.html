@@ -1,0 +1,104 @@
+<html></html>
+
+<style>
+#canvas {
+  border: 1px solid #000;
+}
+</style>
+
+<script>
+let isDrawing = false;
+let drawType = 'circle';
+let startX = 0;
+let startY = 0;
+let endX = 0;
+let endY = 0;
+
+function init() {
+  const canvas = document.getElementById('canvas')
+  const ctx = canvas.getContext('2d')
+  ctx.strokeStyle = 'rgb(100, 200, 100)';
+  ctx.fillStyle = 'rgb(100, 200, 100)';
+
+    // マウスのクリックを押した点から離した点の間に円を描く
+  canvas.addEventListener('mousedown', (e) => {
+    if(isDrawing) {
+      startX = e.offsetX;
+      startY = e.offsetY;
+    }
+  });
+
+  canvas.addEventListener('mouseup', (e) => {
+    if(isDrawing) {
+      endX = e.offsetX;
+      endY = e.offsetY;
+      const width = endX - startX;
+      const height = endY - startY;
+      
+      if(drawType === 'circle') {
+        const r = Math.sqrt(width ** 2 + height ** 2);
+        ctx.beginPath();
+        ctx.arc(startX, startY, r, 0, Math.PI * 2, false);
+        ctx.stroke();
+      } else if(drawType === 'rectangle') {
+        ctx.beginPath();
+        ctx.rect(startX, startY, width, height);
+        ctx.stroke();
+      } else if(drawType === 'xmark') {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.moveTo(startX, endY);
+        ctx.lineTo(endX, startY);
+        ctx.stroke();
+      }
+      ctx.fill();
+    }
+  });
+}
+
+function startDrawingCircle() {
+  isDrawing = true;
+  drawType = 'circle';
+}
+
+function startDrawingRectangle() {
+  isDrawing = true;
+  drawType = 'rectangle';
+}
+
+function startDrawingXmark() {
+  isDrawing = true;
+  drawType = 'xmark';
+}
+
+// function startDrawingCircle () {
+//   const canvas = document.getElementById('canvas')
+//   const ctx = canvas.getContext('2d');
+//   // マウスのクリックを押した点から離した点の間に円を描く
+//   canvas.addEventListener('mousedown', (e) => {
+//     const x = e.offsetX;
+//     const y = e.offsetY;
+//     canvas.addEventListener('mouseup', (e) => {
+//       const x2 = e.offsetX;
+//       const y2 = e.offsetY;
+//       const r = Math.sqrt((x2 - x) ** 2 + (y2 - y) ** 2);
+//       ctx.beginPath();
+//       ctx.arc(x, y, r, 0, Math.PI * 2, false);
+//       ctx.stroke();
+
+//       canvas.removeEventListener('mousedown', () => {});
+//       canvas.removeEventListener('mouseup', () => {});
+//     });
+//   });
+// }
+</script>
+
+<body onload="init()">
+  <button onclick="startDrawingCircle()">circle</button>
+  <button onclick="startDrawingRectangle()">rectangle</button>
+  <button onclick="startDrawingXmark()">Xmark</button>
+  <canvas id="canvas" width="500" height="500"></canvas>
+</body>
+
+</html>
